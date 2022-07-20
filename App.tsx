@@ -67,7 +67,7 @@ export default function App() {
 
   return (
     <Animated.View style={[styles.container, rStyle]}>
-      <Animated.Text style={[styles.text, rTextStyle]}>Theme</Animated.Text>
+      <Animated.Text style={[styles.text, rTextStyle]}>Happy</Animated.Text>
       <Animated.View style={[styles.circle, rCircleStyle]}>
         <Switch
           value={theme === 'dark'}
@@ -114,3 +114,4 @@ const styles = StyleSheet.create({
     marginBottom: 35,
   },
 });
+
