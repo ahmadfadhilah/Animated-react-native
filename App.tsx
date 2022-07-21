@@ -1,62 +1,25 @@
 import React from "react";
-import { View, Text, Animated, PanResponder } from "react-native";
+import { StatusBar } from "expo-status-bar";
+import { View, StyleSheet } from "react-native";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import BottomSheet from "./components/BottomSheet";
 
-export default function BelumBayar() {
-  const position = new Animated.ValueXY({ x: 0, y: 0 });
-
-  //2. Handling gestures
-  const pan = PanResponder.create({
-    onMoveShouldSetPanResponder: () => true,
-
-    onPanResponderMove: (e, gesture) => {
-      position.setValue({ x: gesture.dx, y: gesture.dy });
-    },
-    // onPanResponderMove: Animated.event([
-    //   null,
-    //   {dx: position.x, dy: position.y},
-    // ]),
-
-    onPanResponderRelease: () => {
-      // position.setValue({x:0,y:0})
-      Animated.spring(position, {
-        toValue: { x: 0, y: 0 },
-        useNativeDriver: true,
-      }).start();
-    },
-  });
-
-  //1. interpolate over value
-  const rotate = position.x.interpolate({
-    inputRange: [0, 90],
-    outputRange: ["0deg", "360deg"],
-  });
+export default function App() {
   return (
-    <View
-      style={{
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-    >
-      <Animated.View
-        {...pan.panHandlers}
-        style={{
-          height: 80,
-          width: 80,
-          alignItems: "center",
-          justifyContent: "center",
-          backgroundColor: "#61dafb",
-          borderRadius: 4,
-          transform: [
-            { translateX: position.x },
-            { translateY: position.y },
-            { rotate: rotate },
-          ],
-        }}
-      >
-        <Text>Halo</Text>
-      </Animated.View>
-    </View>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <View style={styles.container}>
+        <StatusBar style="light" />
+        <BottomSheet />
+      </View>
+    </GestureHandlerRootView>
   );
 }
 
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#111",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+});
