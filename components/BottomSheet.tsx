@@ -11,10 +11,14 @@ const { height: SCREEN_HEIGHT } = Dimensions.get("window");
 const BottomSheet = () => {
   const translateY = useSharedValue(0);
 
-  const gesture = Gesture.Pan().onUpdate((event) => {
-    // console.log(event.translationY);
-    translateY.value = event.translationY;
-  });
+  const context = useSharedValue({ y: 0 });
+  const gesture = Gesture.Pan()
+    .onStart(() => {
+      context.value = { y: translateY.value };
+    })
+    .onUpdate((event) => {
+      translateY.value = event.translationY + context.value.y;
+    });
 
   const rBottomSheetStyle = useAnimatedStyle(() => {
     return {
