@@ -9,6 +9,7 @@ export default function App() {
   const onPress = useCallback(() => {
     const isActive = ref?.current?.isActive();
     if (isActive) {
+      ref?.current?.scrollTo(0);
     } else {
       ref?.current?.scrollTo(-200);
     }
@@ -19,7 +20,9 @@ export default function App() {
       <View style={styles.container}>
         <StatusBar style="light" />
         <TouchableOpacity style={styles.button} onPress={onPress} />
-        <BottomSheet ref={ref} />
+        <BottomSheet ref={ref}>
+          <View style={{flex: 1, backgroundColor: 'skyblue'}}/>
+        </BottomSheet>
       </View>
     </GestureHandlerRootView>
   );
