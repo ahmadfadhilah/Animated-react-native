@@ -1,15 +1,25 @@
-import React from "react";
+import React, { useCallback, useRef } from "react";
 import { StatusBar } from "expo-status-bar";
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, TouchableOpacity } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import BottomSheet from "./components/BottomSheet";
+import BottomSheet, { BottomSheetRefProps } from "./components/BottomSheet";
 
 export default function App() {
+  const ref = useRef<BottomSheetRefProps>(null);
+  const onPress = useCallback(() => {
+    const isActive = ref?.current?.isActive();
+    if (isActive) {
+    } else {
+      ref?.current?.scrollTo(-200);
+    }
+  }, []);
+
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <View style={styles.container}>
         <StatusBar style="light" />
-        <BottomSheet />
+        <TouchableOpacity style={styles.button} onPress={onPress} />
+        <BottomSheet ref={ref} />
       </View>
     </GestureHandlerRootView>
   );
@@ -21,5 +31,12 @@ const styles = StyleSheet.create({
     backgroundColor: "#111",
     alignItems: "center",
     justifyContent: "center",
+  },
+  button: {
+    height: 50,
+    borderRadius: 25,
+    aspectRatio: 1,
+    backgroundColor: "white",
+    opacity: 0.6,
   },
 });
