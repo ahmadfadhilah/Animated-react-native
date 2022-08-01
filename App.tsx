@@ -13,12 +13,15 @@ export default function App() {
       <View style={[styles.dot, styles.center]}>
         {[...Array(3).keys()].map((index) => {
           return <MotiView 
-          from={{opacity: 1, scale: 1}}
-          animate={{opacity: 1, scale: 4}}
+          from={{opacity: 0.7, scale: 1}}
+          animate={{opacity: 0, scale: 4}}
           transition={{
             type: "timing",
             duration: 2000,
             easing: Easing.out(Easing.ease),
+            delay: index * 400,
+            repeatReverse: false,
+            loop: true,
           }}
           key={index}
           style={[StyleSheet.absoluteFillObject, styles.dot]} />;
