@@ -1,45 +1,34 @@
-import React, { useCallback, useRef } from "react";
-import { StatusBar } from "expo-status-bar";
-import { View, StyleSheet, TouchableOpacity } from "react-native";
-import { GestureHandlerRootView } from "react-native-gesture-handler";
-import BottomSheet, { BottomSheetRefProps } from "./components/BottomSheet";
+import * as React from "react";
+import { Feather } from "@expo/vector-icons";
+import { View, Text, StyleSheet } from "react-native";
+
+const _color = "#6E01EF";
+const _size = 100;
 
 export default function App() {
-  const ref = useRef<BottomSheetRefProps>(null);
-  const onPress = useCallback(() => {
-    const isActive = ref?.current?.isActive();
-    if (isActive) {
-      ref?.current?.scrollTo(0);
-    } else {
-      ref?.current?.scrollTo(-200);
-    }
-  }, []);
-
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
-      <View style={styles.container}>
-        <StatusBar style="light" />
-        <TouchableOpacity style={styles.button} onPress={onPress} />
-        <BottomSheet ref={ref}>
-          <View style={{flex: 1, backgroundColor: 'skyblue'}}/>
-        </BottomSheet>
+    <View style={styles.container}>
+      <View style={[styles.dot, styles.center]}>
+        <Feather name="phone-outgoing" size={32} color="#fff"/>
       </View>
-    </GestureHandlerRootView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  container:  {
     flex: 1,
-    backgroundColor: "#111",
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: 'center',
+    justifyContent: 'center',
   },
-  button: {
-    height: 50,
-    borderRadius: 25,
-    aspectRatio: 1,
-    backgroundColor: "white",
-    opacity: 0.6,
+  dot: {
+    width: _size,
+    height: _size,
+    borderRadius: _size,
+    backgroundColor: _color
   },
-});
+  center: {
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+})
