@@ -1,33 +1,67 @@
-import * as React from "react";
-import { Feather } from "@expo/vector-icons";
-import { MotiView } from '@motify/components'
-import { View, Text, StyleSheet } from "react-native";
-import { Easing } from "react-native-reanimated";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import {
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import Animated, { FadeIn, FadeOut, Layout } from "react-native-reanimated";
 
-const _color = "#6E01EF";
-const _size = 100;
+const LIST_ITEM_COLOR = "#61dafb";
+
+interface Item {
+  id: number;
+}
 
 export default function App() {
+  const initialMode = useRef<boolean>(true);
+
+  useEffect(() => {
+    initialMode.current = false;
+  }, []);
+
+  const [items, setItems] = useState<Item[]>(
+    new Array(5).fill(0).map((_, index) => ({ id: index }))
+  );
+
+  const onAdd = useCallback(() => {
+    setItems((currentItems) => {
+      const nextItemId = (currentItems[currentItems.length - 1]?.id ?? 0) + 1;
+      return [...currentItems, { id: nextItemId }];
+    });
+  }, []);
+
+  const onDelete = useCallback((itemId: number) => {
+    setItems((currentItems) => {
+      return currentItems.filter((item) => item.id !== itemId);
+    });
+  }, []);
+
   return (
     <View style={styles.container}>
-      <View style={[styles.dot, styles.center]}>
-        {[...Array(3).keys()].map((index) => {
-          return <MotiView 
-          from={{opacity: 0.7, scale: 1}}
-          animate={{opacity: 0, scale: 4}}
-          transition={{
-            type: "timing",
-            duration: 2000,
-            easing: Easing.out(Easing.ease),
-            delay: index * 400,
-            repeatReverse: false,
-            loop: true,
-          }}
-          key={index}
-          style={[StyleSheet.absoluteFillObject, styles.dot]} />;
+      <TouchableOpacity style={styles.floatingButton} onPress={onAdd}>
+        <Text style={{ color: "white", fontSize: 40 }}>+</Text>
+      </TouchableOpacity>
+      <ScrollView
+        style={{ flex: 1 }}
+        contentContainerStyle={{ paddingVertical: 50 }}
+      >
+        {items.map((item, index) => {
+          return (
+            <Animated.View
+              key={item.id}
+              entering={
+                initialMode.current ? FadeIn.delay(100 * index) : FadeIn
+              }
+              exiting={FadeOut}
+              layout={Layout.delay(130)}
+              onTouchEnd={() => onDelete(item.id)}
+              style={styles.listItem}
+            />
+          );
         })}
-        <Feather name="phone-outgoing" size={32} color="#fff" />
-      </View>
+      </ScrollView>
     </View>
   );
 }
@@ -35,16 +69,30 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
+    backgroundColor: "#fff",
   },
-  dot: {
-    width: _size,
-    height: _size,
-    borderRadius: _size,
-    backgroundColor: _color,
+  listItem: {
+    height: 80,
+    backgroundColor: LIST_ITEM_COLOR,
+    width: "90%",
+    marginVertical: 10,
+    borderRadius: 20,
+    alignSelf: "center",
+    elevation: 5,
+    shadowColor: "black",
+    shadowOpacity: 0.15,
+    shadowOffset: { width: 0, height: 10 },
+    shadowRadius: 20,
   },
-  center: {
+  floatingButton: {
+    width: 66,
+    aspectRatio: 1,
+    backgroundColor: "black",
+    borderRadius: 40,
+    position: "absolute",
+    bottom: 50,
+    right: "5%",
+    zIndex: 10,
     alignItems: "center",
     justifyContent: "center",
   },
