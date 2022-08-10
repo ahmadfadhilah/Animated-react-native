@@ -1,81 +1,54 @@
-import React, { Component } from "react";
-import {
-  StyleSheet,
-  View,
-  Animated,
-  Text,
-  TouchableWithoutFeedback,
-} from "react-native";
+import React from "react";
+import { View, Text, Animated, PanResponder } from "react-native";
 
-export default class animations extends Component {
-  state = {
-    animation: new Animated.Value(0),
-  };
-  toggleOpen = () => {
-    Animated.timing(this.state.animation, {
-      toValue: 1,
-      duration: 3000,
-      useNativeDriver: true,
-    }).start();
-  };
+export default function App() {
+  const position = new Animated.ValueXY({ x: 0, y: 0 });
+  const pan = PanResponder.create({
+    onMoveShouldSetPanResponder: () => true,
 
-  render() {
-    const scaleInterpolate = this.state.animation.interpolate({
-      inputRange: [0, 1],
-      outputRange: [0, 50],
-    });
-    backgroundStyle = {
-      transform: [
-        {
-          scale: scaleInterpolate,
-        },
-      ],
-    };
-    return (
-      <View style={styles.container}>
-        <Animated.View
-          style={[styles.background, backgroundStyle]}
-        ></Animated.View>
+    onPanResponderMove: (e, gesture) => {
+      position.setValue({ x: gesture.dx, y: gesture.dy });
+    },
 
-        <TouchableWithoutFeedback onPress={this.toggleOpen}>
-          <View style={styles.button}>
-            <Text style={styles.text}>Click</Text>
-          </View>
-        </TouchableWithoutFeedback>
-      </View>
-    );
-  }
+    onPanResponderRelease: () => {
+      
+      Animated.spring(position, {
+        toValue: { x: 0, y: 0 },
+        useNativeDriver: true,
+      }).start();
+    },
+  });
+  
+  const rotate = position.x.interpolate({
+    inputRange: [0, 90],
+    outputRange: ["0deg", "360deg"],
+  });
+  return (
+    <View
+      style={{
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+      }}
+    >
+      <Animated.View
+        {...pan.panHandlers}
+        style={{
+          height: 80,
+          width: 80,
+          alignItems: "center",
+          justifyContent: "center",
+          backgroundColor: "#61dafb",
+          borderRadius: 4,
+          transform: [
+            { translateX: position.x },
+            { translateY: position.y },
+            { rotate: rotate },
+          ],
+        }}
+      >
+        <Text>Halo</Text>
+      </Animated.View>
+    </View>
+  );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  background: {
-    backgroundColor: "blue",
-    position: "absolute",
-    width: 60,
-    height: 60,
-    bottom: 20,
-    right: 20,
-    borderRadius: 30,
-  },
-  button: {
-    width: 60,
-    height: 60,
-    backgroundColor: "blue",
-    alignItems: "center",
-    justifyContent: "center",
-    shadowColor: "#333",
-    shadowOpacity: 0.8,
-    shadowOffset: { x: 2, y: 0 },
-    shadowRadius: 2,
-    borderRadius: 30,
-    position: "absolute",
-    bottom: 20,
-    right: 20,
-  },
-  text: {
-    color: "#FFF",
-  },
-});
