@@ -1,55 +1,109 @@
 import { MotiView } from "@motify/components";
 import * as React from "react";
-import { View, Text } from "react-native";
+import { View, StyleSheet, Pressable } from "react-native";
+import { Easing } from "react-native-reanimated";
 
-const LoadingIndicator = ({ size }: { size: number }) => {
+const _colors = {
+  active: "#2C2C2C",
+  inactive: "#DCDCDC",
+};
+
+type SwitchProps = {
+  size: number;
+  onPress: () => void;
+  isActive: boolean;
+};
+
+const transition: MotiTransitionProp = {
+  type: "timing",
+  duration: 300,
+  easing: Easing.inOut(Easing.ease),
+};
+
+const Switch: React.FC<SwitchProps> = ({ size, onPress, isActive }) => {
+  const trackWidth = React.useMemo(() => {
+    return size * 1.5;
+  }, [size]);
+
+  const trackHeight = React.useMemo(() => {
+    return size * 0.4;
+  }, [size]);
+
+  const knobSize = React.useMemo(() => {
+    return size * 0.6;
+  }, [size]);
+
   return (
-    <MotiView
-      from={{
-        width: size,
-        height: size,
-        borderRadius: size / 2,
-        borderWidth: 0,
-        shadowOpacity: 0.5,
-      }}
-      animate={{
-        width: size + 20,
-        height: size + 20,
-        borderRadius: (size + 20) / 2,
-        borderWidth: size / 10,
-        shadowOpacity: 1,
-      }}
-      transition={{
-        type: "timing",
-        duration: 1000,
-        loop: true,
-      }}
-      style={{
-        width: size,
-        height: size,
-        borderRadius: size / 2,
-        borderWidth: size / 10,
-        borderColor: "#fff",
-        shadowColor: "#fff",
-        shadowOffset: { width: 0, height: 0 },
-        shadowOpacity: 1,
-        shadowRadius: 10,
-      }}
-    />
+    <Pressable onPress={onPress}>
+      <View style={{ alignItems: "center", justifyContent: "center" }}>
+        <MotiView
+          transition={transition}
+          animate={{
+            backgroundColor: isActive ? _colors.active : _colors.inactive,
+          }}
+          style={{
+            position: "absolute",
+            width: trackWidth,
+            height: trackHeight,
+            borderRadius: trackHeight / 2,
+            backgroundColor: _colors.active,
+          }}
+        />
+
+        <MotiView
+          transition={transition}
+          animate={{
+            translateX: isActive ? trackWidth / 4 : -trackWidth / 4,
+          }}
+          style={{
+            width: size,
+            height: size,
+            borderRadius: size / 2,
+            backgroundColor: "#fff",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <MotiView
+            transition={transition}
+            animate={{
+              width: isActive ? 0 : knobSize,
+              borderColor: isActive ? _colors.active : _colors.inactive,
+            }}
+            style={{
+              width: knobSize,
+              height: knobSize,
+              borderRadius: knobSize / 2,
+              borderWidth: size * 0.1,
+              borderColor: _colors.active,
+            }}
+          />
+        </MotiView>
+      </View>
+    </Pressable>
   );
 };
 
 export default function App() {
+  const [isActive, setIsActive] = React.useState(false);
   return (
-    <View
-      style={{
-        flex: 1,
-        alignItems: "center",
-        justifyContent: "center",
-        backgroundColor: "#010100",
-      }}
-    >
-      <LoadingIndicator size={100} />
+    <View style={styles.container}>
+      <Switch
+        size={120}
+        onPress={() => {
+          setIsActive((isActive) => !isActive);
+        }}
+        isActive={isActive}
+      />
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#f3f3f4",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+});
