@@ -2,7 +2,7 @@ import React, { useCallback, useRef } from "react";
 import { StatusBar } from "expo-status-bar";
 import { View, StyleSheet, TouchableOpacity } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import BottomSheet, { BottomSheetRefProps } from "./components/BottomSheet";
+import BottomSheet, { BottomSheetRefProps } from "../../components/BottomSheet";
 
 export default function App() {
   const ref = useRef<BottomSheetRefProps>(null);

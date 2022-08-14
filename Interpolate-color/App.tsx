@@ -10,7 +10,7 @@ import {
 
 import React from "react";
 import { StyleSheet, View } from "react-native";
-import { RoundedItem } from "./components/rounded-item";
+import { RoundedItem } from "./src/components/rounded-item";
 import {
   CANVAS_HEIGHT,
   CANVAS_WIDTH,
@@ -19,7 +19,7 @@ import {
   SQUARES_AMOUNT_VERTICAL,
   SQUARE_CONTAINER_SIZE,
   SQUARE_SIZE,
-} from "./constants/RoundedItem";
+} from "./src/constants/RoundedItem";
 
 export default function App() {
   const touchedPoint = useValue<{ x: number; y: number } | null>(null);
